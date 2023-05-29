@@ -30,6 +30,10 @@ namespace
         return aBARCHName.left(suffixPos) + "unpacked.bmp";
     }
 }
+BMPArchiver::BMPArchiver()
+   : mWidth(0)
+   , mHeight(0)
+{}
 
 QString BMPArchiver::convert(QString aFileName)
 {
@@ -60,9 +64,9 @@ void BMPArchiver::readBMP(QString aFileName)
         throw QString("Unsupported file");
 }
 
-void BMPArchiver::BMPtoBARCH() 
+void BMPArchiver::BMPtoBARCH()
 {
-   if (mBMPImage.isNull())
+    if (mBMPImage.isNull())
         return;
     mBARCHData.reserve(mHeight);
     const size_t standardBlockAmount = mWidth / cStandardBlockSize;
@@ -80,46 +84,46 @@ void BMPArchiver::BMPtoBARCH()
             lastPixels.reserve(blockSize);
             for (int i = 0; i < blockSize; ++i)
                 lastPixels.push_back(mBMPImage.pixel(x + i, y));
-                if (lastPixels[0] == cWhite)
+            if (lastPixels[0] == cWhite)
+            {
+                size_t i = 1;
+                for (; i < blockSize; ++i)
+                    if (lastPixels[i] != cWhite)
+                        break;
+                if (i == blockSize)
                 {
-                    size_t i = 1;
-                    for (; i < blockSize; ++i)
-                        if (lastPixels[i] != cWhite)
-                            break;
-                    if (i == blockSize)
-                    {
-                        row.setBit(bitsUsed++, false);
-                        lastPixels.clear();
-                        return;
-                    }
+                    row.setBit(bitsUsed++, false);
+                    lastPixels.clear();
+                    return;
                 }
-                else if (lastPixels[0] == cBlack)
+            }
+            else if (lastPixels[0] == cBlack)
+            {
+                size_t i = 1;
+                for (; i < blockSize; ++i)
+                    if (lastPixels[i] != cBlack)
+                        break;
+                if (i == blockSize)
                 {
-                    size_t i = 1;
-                    for (; i < blockSize; ++i)
-                        if (lastPixels[i] != cBlack)
-                            break;
-                    if (i == blockSize)
-                    {
-                        row.setBit(bitsUsed++, true);
-                        row.setBit(bitsUsed++, false);
-                        isRowBlank = false;
-                        lastPixels.clear();
-                        return;
-                    }
+                    row.setBit(bitsUsed++, true);
+                    row.setBit(bitsUsed++, false);
+                    isRowBlank = false;
+                    lastPixels.clear();
+                    return;
                 }
-                row.setBit(bitsUsed++, true);
-                row.setBit(bitsUsed++, true);
-                for (auto& pixel : lastPixels)
+            }
+            row.setBit(bitsUsed++, true);
+            row.setBit(bitsUsed++, true);
+            for (auto& pixel : lastPixels)
+            {
+                for (int i = cBitsInByte - 1; i >= 0; --i)
                 {
-                    for (int i = cBitsInByte - 1; i >= 0; --i)
-                    {
-                        auto value = (pixel >> i) & 1;
-                        row.setBit(bitsUsed++, value);
-                    }
+                    auto value = (pixel >> i) & 1;
+                    row.setBit(bitsUsed++, value);
                 }
-                isRowBlank = false;
-                lastPixels.clear();
+            }
+            isRowBlank = false;
+            lastPixels.clear();
         };
         for (int block = 0; block < standardBlockAmount; ++block, x += cStandardBlockSize)
             processPixel(cStandardBlockSize);
@@ -178,7 +182,7 @@ void BMPArchiver::BARCHtoBMP() {
     const int standardBlocksAmount = mWidth / cStandardBlockSize;
     const int lastBlockSize = mWidth % cStandardBlockSize;
     for (const auto& row : mBARCHData)
-    {        
+    {
         if (row == cBlankRow)
         {
             mBMPData.append(mWidth + cBMPDataTail, cWhite);
@@ -195,7 +199,7 @@ void BMPArchiver::BARCHtoBMP() {
                         unsigned char value = 0;
                         for (int i = 0; i < cBitsInByte; ++i)
                             value = (value << 1) + row[bit++];
-                      mBMPData.append(value);
+                        mBMPData.append(value);
                     }
                 else
                     mBMPData.append(blockSize, cBlack);

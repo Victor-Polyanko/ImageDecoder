@@ -5,16 +5,28 @@ VisualStudioVersion = 16.0.32228.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageDecoder", "ImageDecoder\ImageDecoder.vcxproj", "{2050074F-B0E7-4CD2-A95D-6CA88162F25C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BMPArchiver", "BMPArchiver\BMPArchiver.vcxproj", "{6C1A86CC-56CB-4705-8DA8-3F4BF1BCFF9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2050074F-B0E7-4CD2-A95D-6CA88162F25C}.Debug|x64.ActiveCfg = Debug|x64
 		{2050074F-B0E7-4CD2-A95D-6CA88162F25C}.Debug|x64.Build.0 = Debug|x64
+		{2050074F-B0E7-4CD2-A95D-6CA88162F25C}.Debug|x86.ActiveCfg = Debug|x64
 		{2050074F-B0E7-4CD2-A95D-6CA88162F25C}.Release|x64.ActiveCfg = Release|x64
 		{2050074F-B0E7-4CD2-A95D-6CA88162F25C}.Release|x64.Build.0 = Release|x64
+		{2050074F-B0E7-4CD2-A95D-6CA88162F25C}.Release|x86.ActiveCfg = Release|x64
+		{6C1A86CC-56CB-4705-8DA8-3F4BF1BCFF9C}.Debug|x64.ActiveCfg = Debug|x64
+		{6C1A86CC-56CB-4705-8DA8-3F4BF1BCFF9C}.Debug|x64.Build.0 = Debug|x64
+		{6C1A86CC-56CB-4705-8DA8-3F4BF1BCFF9C}.Debug|x86.ActiveCfg = Debug|x64
+		{6C1A86CC-56CB-4705-8DA8-3F4BF1BCFF9C}.Release|x64.ActiveCfg = Release|x64
+		{6C1A86CC-56CB-4705-8DA8-3F4BF1BCFF9C}.Release|x64.Build.0 = Release|x64
+		{6C1A86CC-56CB-4705-8DA8-3F4BF1BCFF9C}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
