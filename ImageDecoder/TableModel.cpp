@@ -18,8 +18,8 @@ TableModel::TableModel(QObject* parent)
     worker->moveToThread(&mWorkerThread);
     connect(&mWorkerThread, &QThread::finished, worker, &QObject::deleteLater);
     connect(this, &TableModel::processFile, worker, &FileWorker::processFile);
-    connect(worker, &FileWorker::succed, this, &TableModel::addNewFile);
-    connect(worker, &FileWorker::failed, this, &TableModel::showMessageBox);
+    connect(worker, &FileWorker::succed, this, &TableModel::processSucces);
+    connect(worker, &FileWorker::failed, this, &TableModel::processFailure);
     mWorkerThread.start();
 }
 
@@ -85,17 +85,45 @@ void TableModel::addHeader(const QString& aName)
 
 void TableModel::onClick(const int& aRow)
 {
+    if (mActiveFiles.find(aRow) != mActiveFiles.end())
+        return;
     auto fullName = mPath + mHeaders[aRow][FileName] + '.' + mHeaders[aRow][FileType];
-    emit processFile(fullName);
+    addDescription(aRow);
+    emit processFile(fullName, aRow);
 }
 
-void TableModel::addNewFile(const QString& aOutputName)
+void TableModel::addDescription(const int& aInputFileId)
 {
-    auto baseName = QFileInfo(aOutputName).completeBaseName();
+    mActiveFiles[aInputFileId] = mHeaders[aInputFileId][FileName];
+    mHeaders[aInputFileId][FileName] += mHeaders[aInputFileId][FileType] == QString("barch")
+                                      ? QString(" decoding...")
+                                      : QString(" coding...");
+    QModelIndex index = this->index(aInputFileId, 0);
+    emit dataChanged(index, index);
+}
+
+void TableModel::removeDescription(const int& aInputFileId)
+{
+    mHeaders[aInputFileId][FileName] = mActiveFiles[aInputFileId];
+    mActiveFiles.remove(aInputFileId);
+    QModelIndex index = this->index(aInputFileId, 0);
+    emit dataChanged(index, index);
+}
+
+void TableModel::processSucces(const QString& aNewName, const int& aInputFileId)
+{
+    removeDescription(aInputFileId);
+    const auto baseName = QFileInfo(aNewName).completeBaseName();
     for (const auto& header : mHeaders)
         if (header[FileName] == baseName)
             return;
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    addHeader(aOutputName);
+    addHeader(aNewName);
     endInsertRows();
+}
+
+void TableModel::processFailure(const QString& aMessage, const int& aInputFileId)
+{
+    removeDescription(aInputFileId);
+    showMessageBox(aMessage);
 }

@@ -24,19 +24,23 @@ public:
     Q_INVOKABLE void onClick(const int& aRow);
 
 public slots:
-    void addNewFile(const QString& aName); 
+    void processSucces(const QString& aNewName, const int& aInputFileId);
+    void processFailure(const QString& aMessage, const int& aInputFileId);
 
 private:
+    void addDescription(const int& aInputFileId);
+    void removeDescription(const int& aInputFileId);
     void addHeader(const QString& aInfo);
 
 signals:
-    void processFile(const QString& aName);
+    void processFile(const QString& aName, const int& aInputFileId);
     void showMessageBox(const QString& aName);
 
 private:
     QThread mWorkerThread;
     QString mPath;
     QVector<ImageHeader> mHeaders;
+    QMap<int, QString> mActiveFiles;
 };
 
 #endif // TABLEMODEL_H
