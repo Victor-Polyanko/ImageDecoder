@@ -46,21 +46,23 @@ void BARCHConvertor::convertData() {
         int bit = 0;
         auto processBlock = [&](const int& blockSize)
         {
-            if (row[bit++])
+            if (!row[bit++])
             {
-                if (row[bit++])
-                    for (int b = 0; b < blockSize; ++b)
-                    {
-                        unsigned char value = 0;
-                        for (int i = 0; i < cBitsInByte; ++i)
-                            value = (value << 1) + row[bit++];
-                        mBMPData.append(value);
-                    }
-                else
-                    mBMPData.append(blockSize, cBlack);
-            }
-            else
                 mBMPData.append(blockSize, cWhite);
+                return;
+            }
+            if (!row[bit++])
+            {
+                mBMPData.append(blockSize, cBlack);
+                return;
+            }
+            for (int b = 0; b < blockSize; ++b)
+            {
+                unsigned char value = 0;
+                for (int i = 0; i < cBitsInByte; ++i)
+                    value = (value << 1) + row[bit++];
+                mBMPData.append(value);
+            }
         };
         for (int block = 0; block < standardBlocksAmount; ++block)
             processBlock(cStandardBlockSize);

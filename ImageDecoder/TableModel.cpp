@@ -11,8 +11,8 @@ namespace
     const QString ImageAtributes[] = { FileName, FileType, FileDate, FileSize };
 }
 
-TableModel::TableModel(QObject* parent)
-    : QAbstractTableModel(parent)
+TableModel::TableModel(QObject* aParent)
+    : QAbstractTableModel(aParent)
 {
     FileWorker* worker = new FileWorker;
     worker->moveToThread(&mWorkerThread);
@@ -28,37 +28,37 @@ TableModel::~TableModel() {
     mWorkerThread.wait();
 }
 
-QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant TableModel::headerData(int aSection, Qt::Orientation aOrientation, int aRole) const
 {
-    if (role == Qt::DisplayRole) {
-        if (orientation == Qt::Horizontal)
-            return ImageAtributes[section];
+    if (aRole == Qt::DisplayRole) {
+        if (aOrientation == Qt::Horizontal)
+            return ImageAtributes[aSection];
     }
     return QVariant();
 }
 
-int TableModel::rowCount(const QModelIndex& parent) const
+int TableModel::rowCount(const QModelIndex& aParent) const
 {
-    if (parent.isValid())
+    if (aParent.isValid())
         return 0;
     return mHeaders.size();
 }
 
-int TableModel::columnCount(const QModelIndex& parent) const
+int TableModel::columnCount(const QModelIndex& aParent) const
 {
-    if (parent.isValid())
+    if (aParent.isValid())
         return 0;
     return ImageAtributes->size();
 }
 
-QVariant TableModel::data(const QModelIndex& index, int role) const
+QVariant TableModel::data(const QModelIndex& aIndex, int aRole) const
 {
-    if (!index.isValid())
+    if (!aIndex.isValid())
         return QVariant();
-    if (role == Qt::DisplayRole
-        && index.row() >= 0 && index.row() < rowCount()
-        && index.column() >= 0 && index.column() < columnCount())
-        return mHeaders[index.row()][ImageAtributes[index.column()]];
+    if (aRole == Qt::DisplayRole
+        && aIndex.row() >= 0 && aIndex.row() < rowCount()
+        && aIndex.column() >= 0 && aIndex.column() < columnCount())
+        return mHeaders[aIndex.row()][ImageAtributes[aIndex.column()]];
     return QVariant();
 }
 
@@ -83,7 +83,7 @@ void TableModel::addHeader(const QString& aName)
     mHeaders.push_back(header);
 }
 
-void TableModel::onClick(const int& aRow)
+void TableModel::onClick(int aRow)
 {
     if (mActiveFiles.find(aRow) != mActiveFiles.end())
         return;
@@ -92,7 +92,7 @@ void TableModel::onClick(const int& aRow)
     emit processFile(fullName, aRow);
 }
 
-void TableModel::addDescription(const int& aInputFileId)
+void TableModel::addDescription(int aInputFileId)
 {
     mActiveFiles[aInputFileId] = mHeaders[aInputFileId][FileName];
     mHeaders[aInputFileId][FileName] += mHeaders[aInputFileId][FileType] == QString("barch")
@@ -102,7 +102,7 @@ void TableModel::addDescription(const int& aInputFileId)
     emit dataChanged(index, index);
 }
 
-void TableModel::removeDescription(const int& aInputFileId)
+void TableModel::removeDescription(int aInputFileId)
 {
     mHeaders[aInputFileId][FileName] = mActiveFiles[aInputFileId];
     mActiveFiles.remove(aInputFileId);
@@ -110,7 +110,7 @@ void TableModel::removeDescription(const int& aInputFileId)
     emit dataChanged(index, index);
 }
 
-void TableModel::processSucces(const QString& aNewName, const int& aInputFileId)
+void TableModel::processSucces(const QString& aNewName, int aInputFileId)
 {
     removeDescription(aInputFileId);
     const auto baseName = QFileInfo(aNewName).completeBaseName();
@@ -122,7 +122,7 @@ void TableModel::processSucces(const QString& aNewName, const int& aInputFileId)
     endInsertRows();
 }
 
-void TableModel::processFailure(const QString& aMessage, const int& aInputFileId)
+void TableModel::processFailure(const QString& aMessage, int aInputFileId)
 {
     removeDescription(aInputFileId);
     showMessageBox(aMessage);

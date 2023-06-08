@@ -21,19 +21,19 @@ public:
     QVariant data(const QModelIndex& aIndex, int aRole = Qt::DisplayRole) const override;
 
     void init(const QString& aPath, const QStringList& aFiles);
-    Q_INVOKABLE void onClick(const int& aRow);
+    Q_INVOKABLE void onClick(int aRow);
 
 public slots:
-    void processSucces(const QString& aNewName, const int& aInputFileId);
-    void processFailure(const QString& aMessage, const int& aInputFileId);
+    void processSucces(const QString& aNewName, int aInputFileId);
+    void processFailure(const QString& aMessage, int aInputFileId);
 
 private:
-    void addDescription(const int& aInputFileId);
-    void removeDescription(const int& aInputFileId);
+    void addDescription(int aInputFileId);
+    void removeDescription(int aInputFileId);
     void addHeader(const QString& aInfo);
 
 signals:
-    void processFile(const QString& aName, const int& aInputFileId);
+    void processFile(const QString& aName, int aInputFileId);
     void showMessageBox(const QString& aName);
 
 private:

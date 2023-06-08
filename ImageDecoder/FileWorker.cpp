@@ -1,7 +1,7 @@
 #include "FileWorker.h"
 #include "BMPArchiver.h"
 
-void FileWorker::processFile(const QString& aInputName, const int& aInputFileId)
+void FileWorker::processFile(const QString& aInputName, int aInputFileId)
 {
     try {
         BMPArchiver archiver;
