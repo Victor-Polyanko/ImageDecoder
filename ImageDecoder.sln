@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.32228.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageDecoder", "ImageDecoder\ImageDecoder.vcxproj", "{2050074F-B0E7-4CD2-A95D-6CA88162F25C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6C1A86CC-56CB-4705-8DA8-3F4BF1BCFF9C} = {6C1A86CC-56CB-4705-8DA8-3F4BF1BCFF9C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BMPArchiver", "BMPArchiver\BMPArchiver.vcxproj", "{6C1A86CC-56CB-4705-8DA8-3F4BF1BCFF9C}"
 EndProject

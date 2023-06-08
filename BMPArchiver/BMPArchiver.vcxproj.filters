@@ -26,12 +26,31 @@
     <ClInclude Include="bmparchiver_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <QtMoc Include="BMPArchiver.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <ClCompile Include="BMPArchiver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-
+    <ClInclude Include="BMPArchiver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseConvertor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BMPConvertor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BARCHConvertor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BMPConvertor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BARCHConventor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseConvertor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
