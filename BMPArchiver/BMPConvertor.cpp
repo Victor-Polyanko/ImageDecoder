@@ -21,46 +21,37 @@ void BMPConvertor::convertData()
     if (mBMPImage.isNull())
         return;
     mBARCHData.reserve(mHeight);
-    const size_t standardBlockAmount = mWidth / cStandardBlockSize;
-    const size_t lastBlockSize = mWidth % cStandardBlockSize;
-    size_t maxBitsUsed = standardBlockAmount * (2 + cStandardBlockSize * cBitsInByte) + (2 + lastBlockSize * cBitsInByte);
+    const auto standardBlockAmount = mWidth / cStandardBlockSize;
+    const auto lastBlockSize = mWidth % cStandardBlockSize;
+    const auto maxBitsUsed = standardBlockAmount * (2 + cStandardBlockSize * cBitsInByte) + (2 + lastBlockSize * cBitsInByte);
+    QVector<unsigned char> lastPixels;
+    lastPixels.resize(cStandardBlockSize);
     for (int y = 0; y < mHeight; ++y)
     {
         int x = 0;
-        size_t bitsUsed = 0;
+        int bitsUsed = 0;
         bool isRowBlank = true;
+        auto blockSize = cStandardBlockSize;
         QBitArray row(maxBitsUsed);
-        auto processPixel = [&](size_t blockSize)
+        auto processPixel = [&]()
         {
-            QVector<unsigned char> lastPixels;
-            lastPixels.reserve(blockSize);
             for (int i = 0; i < blockSize; ++i)
-                lastPixels.push_back(mBMPImage.pixel(x + i, y));
+                lastPixels[i] = mBMPImage.pixel(x + i, y);
             if (lastPixels[0] == cWhite)
             {
-                size_t i = 1;
-                for (; i < blockSize; ++i)
-                    if (lastPixels[i] != cWhite)
-                        break;
-                if (i == blockSize)
+                if (std::find_if(lastPixels.begin() + 1, lastPixels.begin() + blockSize, [&](uchar p) {return p != cWhite; }) == lastPixels.end())
                 {
                     row.setBit(bitsUsed++, false);
-                    lastPixels.clear();
                     return;
                 }
             }
             else if (lastPixels[0] == cBlack)
             {
-                size_t i = 1;
-                for (; i < blockSize; ++i)
-                    if (lastPixels[i] != cBlack)
-                        break;
-                if (i == blockSize)
+                if (std::find_if(lastPixels.begin() + 1, lastPixels.begin() + blockSize, [&](uchar p) {return p != cBlack; }) == lastPixels.end())
                 {
                     row.setBit(bitsUsed++, true);
                     row.setBit(bitsUsed++, false);
                     isRowBlank = false;
-                    lastPixels.clear();
                     return;
                 }
             }
@@ -75,12 +66,12 @@ void BMPConvertor::convertData()
                 }
             }
             isRowBlank = false;
-            lastPixels.clear();
         };
         for (int block = 0; block < standardBlockAmount; ++block, x += cStandardBlockSize)
-            processPixel(cStandardBlockSize);
+            processPixel();
+        blockSize = lastBlockSize;
         if (lastBlockSize > 0)
-            processPixel(lastBlockSize);
+            processPixel();
         if (isRowBlank)
             mBARCHData.push_back(cBlankRow);
         else
